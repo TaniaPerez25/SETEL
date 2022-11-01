@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Documento sin t&iacute;tulo</title>
+</head>
+
+<body>
+<?php
+/* Dirección o IP del servidor MySQL*/
+      $host = "Localhost";
+ 
+    /* Puerto del servidor MySQL*/
+      $puerto = "3306";
+ 
+     /* Nombre de usuario del servidor MySQL*/
+      $usuario = "telesecu_carrera_admin";
+ 
+     /*Contraseña del usuario*/
+      $contrasena = "admin_carrera_2021";
+ 
+     /* Nombre de la base de datos*/
+      $baseDeDatos ="telesecu_carreraadmin";
+ 
+      /* Nombre de la tabla a trabajar*/
+      $tabla = "inscripcion";
+ 
+      function Conectarse()
+      {
+         global $host, $puerto, $usuario, $contrasena, $baseDeDatos, $tabla;
+ 
+         if (!($link = mysqli_connect($host.":".$puerto, $usuario, $contrasena))) 
+         { 
+            echo "Error conectando a la base de datos.<br>"; 
+            exit(); 
+            }
+         else
+         {
+            echo "Listo, estamos conectados.<br>";
+         }
+         if (!mysqli_select_db($link, $baseDeDatos)) 
+         { 
+            echo "Error seleccionando la base de datos.<br>"; 
+            exit(); 
+         }
+         else
+         {
+            echo "Obtuvimos la base de datos $baseDeDatos sin problema.<br>";
+         }
+      return $link; 
+      } 
+ 
+     $link = Conectarse(); 
+ 
+ 
+      mysql_close($link);
+ 
+      ?>
+	  
+<?php
+
+/* Nombre del fichero que se descargará. */
+$nombre = "inscripcion.csv"; // nombre del archivo que queres que genere !!!
+/* Determina si la tabla será vaciada (si existe) cuando  restauremos la tabla. */            
+$drop = false;
+/* 
+* Array que contiene las tablas de la base de datos que seran resguardadas.
+* Puede especificarse un valor false para resguardar todas las tablas
+* de la base de datos especificada en  $bd.
+* 
+* Ejs.:
+* $tablas = false;
+*    o
+* $tablas = array("tabla1", "tabla2", "tablaetc");
+* 
+*/
+$tablas = false;
+/* 
+* Tipo de compresion.
+* Puede ser "gz", "bz2", o false (sin comprimir)
+*/
+$compresion = false;
+
+/* Conexion y eso*/
+$conexion = mysql_connect($host, $usurio, $passwd)
+or die("No se conectar con el servidor MySQL: ".mysql_error());
+mysql_select_db($bd, $conexion)
+or die("No se pudo seleccionar la Base de Datos: ". mysql_error());
+<?php
+if(isset($_POST["export_data"]))
+{
+	if(!empty($inscripcion))
+	{
+		$filename="inscripcion.xls";
+		header("Content-Type: application/vnd.ms-excel");
+		header("Content-Disposition: attachment; filename=".$filename);
+		$mostrar_columnas=false;
+		foreach($inscripcion as $inscripcion)
+		{
+			if(!$mostrar_columnas)
+			{
+				echo implode("\t",array_keys($inscripcion))."\n";
+				$mostrar_columnas=true;
+			}
+			echo implode("\t",array_values($inscripcion))."\n";
+		}
+	}
+		else
+			{
+				echo'No hay datos a exportar';
+			}
+				exit;
+}
+?>
+<div class="container">
+	<h2>Exportar datos </h2>
+		<div class="well-sm col-sm-12">
+			<div class="btn-group pull-right">
+				<form  action="<?php echo $_SERVER["PHP_SELF"];?>" method="post">	
+					<button type="submit" id="export_data" name='export_data.php'
+					value="Export to excel"class="btn btn-info">Exportar a Excel</button>
+				</form>
+			</div>
+		</div>
+		<table id="" class="table table-striped table-bordered">
+			<tr>
+				<th>FECHA</th>
+				<th>INCORPORACÍON:</th>
+				<th>NOMBRE</th>
+				<th>FILIACIÓN</th>
+				<th>NUM. CELULAR</th>
+				<th>CURP</th>
+				<th>VERTIENTE</th>
+				<th>SECTOR</th>
+				<th>ZONA</th>
+				<th>CLAVECT</th>
+				<th>TEL. DEL CCT</th>
+				<th>COMUNIDAD</th>
+				<th>MUNICIPIO</th>
+				<th>E-mail</th>
+				<th>PLAZA</th>
+				<th>ANTIGÜEDAD</th>
+				<th>FECHA INGRESO</th>
+				<th>DESEMPEÑO</th>
+				<th>JEFE</th>
+				<th>MAIL JEFE</th>
+				<th>COMPAÑERO No. 1</th>
+				<th>EMAIL No. 1</th>
+				<th>COMPAÑERO No.2</th>
+				<th>EMAIL No. 2</th>
+				<th>CURSOS</th>
+		</tr>
+			<tbody>
+			<?php foreach($inscripcion as $inscrip){?>
+				<tr>
+					<td><?php echo $inscrip['fecha']; ?></td>
+					<td><?php echo $inscrip['incorp']; ?></td>
+					<td><?php echo $inscrip['nombre']; ?></td>
+					<td><?php echo $inscrip['rfc']; ?></td>
+					<td><?php echo $inscrip['cel']; ?></td>
+					<td><?php echo $inscrip['curp']; ?></td>
+					<td><?php echo $inscrip['ver']; ?></td>
+					<td><?php echo $inscrip['sec']; ?></td>
+					<td><?php echo $inscrip['zona'];?></td>
+					<td><?php echo $inscrip['cct']; ?></td>
+					<td><?php echo $inscrip['telcct']; ?></td>
+					<td><?php echo $inscrip['comun']; ?></td>
+					<td><?php echo $inscrip['mun']; ?></td>
+					<td><?php echo $inscrip['email']; ?></td>
+					<td><?php echo $inscrip['plaza']; ?></td>
+					<td><?php echo $inscrip['ant']; ?></td>
+					<td><?php echo $inscrip['fechaing']; ?></td>
+					<td><?php echo $inscrip['desemp']; ?></td>
+					<td><?php echo $inscrip['nomjefe']; ?></td>
+					<td><?php echo $inscrip['emailjef']; ?></td>
+					<td><?php echo $inscrip['comp1']; ?></td>
+					<td><?php echo $inscrip['email1']; ?></td>
+					<td><?php echo $inscrip['comp2']; ?></td>
+					<td><?php echo $inscrip['email2']; ?></td>
+					<td><?php echo $inscrip['curs']; ?></td>
+					
+				</tr>
+			<?php}?>
+		</tbody>
+		</table>
+</div>
+
+</body>
+</html>
